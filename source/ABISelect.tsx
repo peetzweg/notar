@@ -1,29 +1,45 @@
-import { ERC20ABI, ERC721ABI, ERC4626ABI } from "@abimate/solmate";
+import { ERC20ABI, ERC4626ABI, ERC721ABI } from "@abimate/solmate";
 import { Box, Text } from "ink";
 import SelectInput from "ink-select-input";
-import React, { FC, useCallback } from "react";
+import React, { FC, useCallback, useMemo } from "react";
+
+import { useABIs } from "./hooks/useABIs";
+
+const DEFAULT_ABIs = [
+	{
+		label: "ERC20",
+		key: "ERC20",
+		value: ERC20ABI,
+	},
+	{
+		label: "ERC721",
+		key: "ERC721",
+		value: ERC721ABI,
+	},
+	{
+		label: "ERC4626",
+		key: "ERC4626",
+		value: ERC4626ABI,
+	},
+];
 
 interface ABISelectProps {
 	onSuccess: (item: any) => void;
 }
+
 const ABISelect: FC<ABISelectProps> = ({ onSuccess }) => {
-	const items = [
-		{
-			label: "ERC20",
-			key: "ERC20",
-			value: ERC20ABI,
-		},
-		{
-			label: "ERC721",
-			key: "ERC721",
-			value: ERC721ABI,
-		},
-		{
-			label: "ERC4626",
-			key: "ERC4626",
-			value: ERC4626ABI,
-		},
-	];
+	const { abis, isLoading } = useABIs();
+	const items = useMemo(() => {
+		return [
+			...Object.entries(abis).map(([label, value]) => ({
+				label,
+				value,
+				key: label,
+			})),
+			...DEFAULT_ABIs,
+		].sort((a, b) => a.label.localeCompare(b.label));
+	}, [abis, isLoading]);
+
 	const handleSelect = useCallback(
 		(item: any) => {
 			onSuccess(item);
@@ -37,7 +53,7 @@ const ABISelect: FC<ABISelectProps> = ({ onSuccess }) => {
 				<Text>ABI:</Text>
 			</Box>
 
-			<SelectInput items={items} onSelect={handleSelect} />
+			{items && <SelectInput items={items} onSelect={handleSelect} />}
 		</Box>
 	);
 };

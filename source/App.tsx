@@ -25,7 +25,7 @@ const App: FC<{ address?: string }> = ({ address: argAddress }) => {
 	return (
 		<Box flexDirection="column">
 			<Box borderStyle="single" flexDirection="column">
-				<Text>Provider: 'env.PROVIDER_URL'</Text>
+				<Text>Provider: {process.env["PROVIDER_URL"]}</Text>
 				<Text>Address: {address || ""}</Text>
 				<Text>ABI: {abi?.label || ""}</Text>
 			</Box>
