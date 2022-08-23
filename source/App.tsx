@@ -1,20 +1,23 @@
-import { Contract, ContractInterface, ethers } from "ethers";
+import { Contract, ContractInterface, providers } from "ethers";
 import { Box, Text } from "ink";
 import React, { FC, useEffect, useMemo, useState } from "react";
 import ABISelect from "./ABISelect";
 import AddressInput from "./AddressInput";
 import FunctionSelect from "./FunctionSelect";
+import NetworkSelect, { SelectedNetwork } from "./NetworkSelect";
 
 const App: FC<{ address?: string }> = ({ address: argAddress }) => {
 	const [address, setAddress] = useState<undefined | string>();
+	const [network, selectNetwork] = useState<undefined | SelectedNetwork>();
+	console.log({ network });
 	const [abi, setABI] = useState<
 		undefined | { label: string; value: ContractInterface }
 	>();
 	const [contract, setContract] = useState<Contract | undefined>(undefined);
-	const provider = useMemo(
-		() => new ethers.providers.JsonRpcProvider(process.env["PROVIDER_URL"]),
-		[]
-	);
+	const provider = useMemo(() => {
+		if (!network) return;
+		return new providers.JsonRpcProvider(network.rpc);
+	}, [network]);
 
 	useEffect(() => {
 		if (address && abi) {
@@ -23,20 +26,25 @@ const App: FC<{ address?: string }> = ({ address: argAddress }) => {
 	}, [address, abi, provider]);
 
 	return (
-		<Box flexDirection="column">
-			<Box borderStyle="single" flexDirection="column">
-				<Text>Provider: {process.env["PROVIDER_URL"]}</Text>
-				<Text>Address: {address || ""}</Text>
-				<Text>ABI: {abi?.label || ""}</Text>
+		<Box flexDirection="column" width={"100%"}>
+			<Box flexDirection="column" width={"50%"}>
+				<Box borderStyle="single" flexDirection="column">
+					<Text>Network: {network ? network.name : ""}</Text>
+					<Text>Address: {address || ""}</Text>
+					<Text>ABI: {abi?.label || ""}</Text>
+				</Box>
 			</Box>
-
-			{!address ? (
-				<AddressInput onSuccess={setAddress} address={argAddress} />
-			) : !abi ? (
-				<ABISelect onSuccess={setABI} />
-			) : contract && abi?.value ? (
-				<FunctionSelect contract={contract} />
-			) : null}
+			<Box flexDirection="column" width={"100%"}>
+				{!provider ? (
+					<NetworkSelect onSuccess={selectNetwork} />
+				) : !address ? (
+					<AddressInput onSuccess={setAddress} address={argAddress} />
+				) : !abi ? (
+					<ABISelect onSuccess={setABI} />
+				) : contract && abi?.value ? (
+					<FunctionSelect contract={contract} />
+				) : null}
+			</Box>
 		</Box>
 	);
 };
