@@ -1,4 +1,4 @@
-import { Contract } from "ethers";
+import { BigNumber, Contract, utils } from "ethers";
 import { Fragment } from "ethers/lib/utils";
 import { Box, Static, Text } from "ink";
 import SelectInput from "ink-select-input";
@@ -12,26 +12,28 @@ interface Item {
 	value: Fragment;
 }
 
+interface CallOutput {
+	fragment: Fragment;
+	inputs: Array<any>;
+	result: any;
+	isError?: boolean;
+}
+
 const FunctionSelect: FC<{ contract: Contract }> = ({ contract }) => {
 	const [fragment, setFragment] = useState<Fragment | undefined>();
 	const [input, setInput] = useState<string>("");
 	const [inputs, setInputs] = useState<Array<any>>([]);
-	const [outputs, setOutputs] = useState<
-		Array<{
-			fragment: Fragment;
-			inputs: Array<any>;
-			result: any;
-			isError?: boolean;
-		}>
-	>([]);
+	const [outputs, setOutputs] = useState<Array<CallOutput>>([]);
 
 	const fragmentItems: Array<Item> = useMemo(
 		() =>
 			contract.interface.fragments
 				.filter((fragment) => fragment.type != "event")
-				.map((fragment) => ({
-					label: `${fragment.name} (${fragment.type})`,
-					key: fragment.name + fragment.type,
+				.map((fragment, index) => ({
+					label: `${fragment.name}(${fragment.inputs
+						.map((i) => i.name || i.type)
+						.join(", ")})`,
+					key: fragment.name + fragment.type + index,
 					value: fragment,
 				})),
 		[contract]
@@ -83,9 +85,14 @@ const FunctionSelect: FC<{ contract: Contract }> = ({ contract }) => {
 	return (
 		<Box flexDirection="column">
 			{!fragment && (
-				<Box>
-					<Text>Fn:</Text>
-					<SelectInput items={fragmentItems} onSelect={handleFragmentSelect} />
+				<Box flexDirection="column">
+					<Text backgroundColor={"white"}>Fn:</Text>
+					<SelectInput
+						items={fragmentItems}
+						onSelect={handleFragmentSelect}
+						limit={10}
+					/>
+					{fragmentItems.length > 10 && <Text>...</Text>}
 				</Box>
 			)}
 
@@ -127,12 +134,7 @@ const FunctionSelect: FC<{ contract: Contract }> = ({ contract }) => {
 
 						<Text bold color={output.isError ? "red" : "green"}>
 							{" "}
-							={" "}
-							{output.isError
-								? output.result.code
-									? output.result.code
-									: "ERROR"
-								: JSON.stringify(output.result)}
+							= {renderResult(output)}
 						</Text>
 					</Box>
 				)}
@@ -140,5 +142,21 @@ const FunctionSelect: FC<{ contract: Contract }> = ({ contract }) => {
 		</Box>
 	);
 };
+
+function renderResult(output: CallOutput) {
+	if (output.isError) {
+		if (output.result.code) {
+			return output.result.code;
+		} else {
+			("ERROR");
+		}
+	}
+
+	if (BigNumber.isBigNumber(output.result)) {
+		return output.result.toString();
+	}
+
+	return JSON.stringify(output.result);
+}
 
 export default FunctionSelect;

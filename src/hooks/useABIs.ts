@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { readdir, readFile } from "fs/promises";
 import { resolve, basename } from "path";
+import { useConfig } from "./useConfig";
 
 async function getFiles(dir: string): Promise<Array<string>> {
 	const dirents = await readdir(dir, { withFileTypes: true });
@@ -14,11 +15,8 @@ async function getFiles(dir: string): Promise<Array<string>> {
 	return Array<string>.prototype.concat(...files);
 }
 
-const readABIs = async () => {
-	if (!process.env["ABI_PATH"]) {
-		return {};
-	}
-	const filepaths = (await getFiles(process.env["ABI_PATH"])).filter((path) =>
+const readABIs = async (path: string) => {
+	const filepaths = (await getFiles(path)).filter((path) =>
 		path.endsWith(".json")
 	);
 	const ABIs: Record<string, Array<Object>> = {};
@@ -34,12 +32,17 @@ const readABIs = async () => {
 export const useABIs = () => {
 	const [isLoading, setLoading] = useState(true);
 	const [abis, setABIs] = useState({});
+	const config = useConfig();
 
 	useEffect(() => {
-		readABIs().then((abis) => {
-			setABIs(abis);
+		if (config["abi_dir"] && typeof config["abi_dir"] === "string") {
+			readABIs(config["abi_dir"]).then((abis) => {
+				setABIs(abis);
+				setLoading(false);
+			});
+		} else {
 			setLoading(false);
-		});
-	}, []);
+		}
+	}, [config]);
 	return { isLoading, abis };
 };

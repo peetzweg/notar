@@ -1,10 +1,8 @@
-import { ERC20ABI, ERC4626ABI, ERC721ABI } from "@abimate/solmate";
 import { Box, Text } from "ink";
-import SelectInput, { Item } from "ink-select-input";
-import React, { FC, useCallback, useMemo } from "react";
+import SelectInput from "ink-select-input";
+import React, { FC, useCallback, useEffect, useMemo } from "react";
 
-import { useABIs } from "./hooks/useABIs";
-import { useConfig } from "./hooks/useConfig";
+import { useConfig } from "../hooks/useConfig";
 
 const DEFAULT_NETWORKS = {
 	ethereum: {
@@ -19,6 +17,7 @@ export interface SelectedNetwork {
 
 interface NetworkSelectProps {
 	onSuccess: (item: SelectedNetwork) => void;
+	network?: string;
 }
 
 const NetworkSelect: FC<NetworkSelectProps> = ({ onSuccess }) => {
@@ -28,6 +27,10 @@ const NetworkSelect: FC<NetworkSelectProps> = ({ onSuccess }) => {
 			...DEFAULT_NETWORKS,
 			...config,
 		})
+			.filter(
+				([_, value]) =>
+					typeof value === "object" && typeof value.rpc === "string"
+			)
 			.map(([networkName, networkConfig]) => ({
 				key: networkName,
 				label: networkName,
@@ -35,6 +38,15 @@ const NetworkSelect: FC<NetworkSelectProps> = ({ onSuccess }) => {
 			}))
 			.sort((a, b) => a.label.localeCompare(b.label));
 	}, [config]);
+
+	useEffect(
+		function selectOnlyNetwork() {
+			if (items.length === 1 && items[0]) {
+				onSuccess(items[0].value);
+			}
+		},
+		[items]
+	);
 
 	const handleSelect = useCallback(
 		(item: any) => {

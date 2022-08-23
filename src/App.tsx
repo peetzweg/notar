@@ -1,15 +1,14 @@
 import { Contract, ContractInterface, providers } from "ethers";
 import { Box, Text } from "ink";
 import React, { FC, useEffect, useMemo, useState } from "react";
-import ABISelect from "./ABISelect";
-import AddressInput from "./AddressInput";
-import FunctionSelect from "./FunctionSelect";
-import NetworkSelect, { SelectedNetwork } from "./NetworkSelect";
+import ABISelect from "./components/ABISelect";
+import AddressInput from "./components/AddressInput";
+import FunctionSelect from "./components/FunctionSelect";
+import NetworkSelect, { SelectedNetwork } from "./components/NetworkSelect";
 
 const App: FC<{ address?: string }> = ({ address: argAddress }) => {
 	const [address, setAddress] = useState<undefined | string>();
 	const [network, selectNetwork] = useState<undefined | SelectedNetwork>();
-	console.log({ network });
 	const [abi, setABI] = useState<
 		undefined | { label: string; value: ContractInterface }
 	>();

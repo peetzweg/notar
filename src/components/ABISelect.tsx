@@ -1,24 +1,29 @@
-import { ERC20ABI, ERC4626ABI, ERC721ABI } from "@abimate/solmate";
+import { ERC20ABI, ERC4626ABI, ERC721ABI, ERC1155ABI } from "@abimate/solmate";
 import { Box, Text } from "ink";
 import SelectInput from "ink-select-input";
 import React, { FC, useCallback, useMemo } from "react";
 
-import { useABIs } from "./hooks/useABIs";
+import { useABIs } from "../hooks/useABIs";
 
 const DEFAULT_ABIs = [
 	{
-		label: "ERC20",
-		key: "ERC20",
+		label: "ERC20 (solmate)",
+		key: "ERC20 (solmate)",
 		value: ERC20ABI,
 	},
 	{
-		label: "ERC721",
-		key: "ERC721",
+		label: "ERC721 (solmate)",
+		key: "ERC721 (solmate)",
 		value: ERC721ABI,
 	},
 	{
-		label: "ERC4626",
-		key: "ERC4626",
+		label: "ERC1155 (solmate)",
+		key: "ERC1155 (solmate)",
+		value: ERC1155ABI,
+	},
+	{
+		label: "ERC4626 (solmate)",
+		key: "ERC4626 (solmate)",
 		value: ERC4626ABI,
 	},
 ];
@@ -53,7 +58,9 @@ const ABISelect: FC<ABISelectProps> = ({ onSuccess }) => {
 				<Text>ABI:</Text>
 			</Box>
 
-			{items && <SelectInput items={items} onSelect={handleSelect} />}
+			{items && (
+				<SelectInput items={items} onSelect={handleSelect} limit={10} />
+			)}
 		</Box>
 	);
 };

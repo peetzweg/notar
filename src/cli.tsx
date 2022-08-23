@@ -8,13 +8,15 @@ import App from "./App";
 const cli = meow(
 	`
 	Usage
-	  $ notar
+	  $ lens
 `,
 	{
 		flags: {
 			address: {
 				type: "string",
 			},
+			// network, erc4626
+			// abi, myPool
 		},
 	}
 );

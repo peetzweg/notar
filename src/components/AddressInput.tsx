@@ -10,13 +10,14 @@ interface InputProps {
 const AddressInput: FC<InputProps> = ({ address, onSuccess }) => {
 	const handleSubmit = useCallback(
 		(rawAddress: string) => {
+			if (rawAddress === undefined || rawAddress.trim().length === 0) return;
 			try {
 				const validAddress = utils.getAddress(rawAddress);
 				if (validAddress) {
 					onSuccess(validAddress);
 				}
 			} catch (e) {
-				console.log({ e });
+				console.error(`'${rawAddress}' is not valid address.`);
 			}
 		},
 		[onSuccess]
