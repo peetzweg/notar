@@ -20,7 +20,7 @@ interface NetworkSelectProps {
   network?: string;
 }
 
-const NetworkSelect: FC<NetworkSelectProps> = ({ onSuccess }) => {
+const NetworkSelect: FC<NetworkSelectProps> = ({ onSuccess, network }) => {
   const config = useConfig();
   const items = useMemo(() => {
     return Object.entries({
@@ -55,11 +55,21 @@ const NetworkSelect: FC<NetworkSelectProps> = ({ onSuccess }) => {
     [onSuccess]
   );
 
+  useEffect(
+    function selectNetworkArgument() {
+      if (network && items) {
+        const networkItem = items.find((item) => item.label === network);
+        if (networkItem) {
+          handleSelect(networkItem);
+        }
+      }
+    },
+    [network, items, handleSelect]
+  );
+
   return (
-    <Box>
-      <Box marginRight={1}>
-        <Text>Network:</Text>
-      </Box>
+    <Box flexDirection="column">
+      <Text bold>Network:</Text>
 
       {items && (
         <SelectInput items={items} onSelect={handleSelect} limit={10} />

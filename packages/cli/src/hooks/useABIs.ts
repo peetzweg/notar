@@ -4,6 +4,8 @@ import { readdir, readFile } from 'fs/promises';
 import { resolve, basename } from 'path';
 import { useConfig } from './useConfig';
 
+type ABIDefinition = unknown;
+
 async function getFiles(dir: string): Promise<Array<string>> {
   const dirents = await readdir(dir, { withFileTypes: true });
   const files = await Promise.all(
@@ -19,7 +21,7 @@ const readABIs = async (path: string) => {
   const filepaths = (await getFiles(path)).filter((path) =>
     path.endsWith('.json')
   );
-  const ABIs: Record<string, Array<Object>> = {};
+  const ABIs: Record<string, Array<ABIDefinition>> = {};
   await Promise.all(
     filepaths.map((f) =>
       readFile(f, { encoding: 'utf8' }).then((buffer) => {

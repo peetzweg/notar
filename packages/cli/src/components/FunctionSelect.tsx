@@ -1,4 +1,4 @@
-import { BigNumber, Contract, utils } from 'ethers';
+import { BigNumber, Contract } from 'ethers';
 import { Fragment } from 'ethers/lib/utils';
 import { Box, Static, Text } from 'ink';
 import SelectInput from 'ink-select-input';
@@ -53,46 +53,52 @@ const FunctionSelect: FC<{ contract: Contract }> = ({ contract }) => {
 
   useEffect(() => {
     if (fragment && inputs.length === fragment.inputs.length) {
-      contract.callStatic[fragment.name]!(...inputs)
-        .then((result) => {
-          setOutputs((outputs) => [
-            ...outputs,
-            {
-              fragment,
-              inputs,
-              result,
-            },
-          ]);
-        })
-        .catch((error) => {
-          setOutputs((outputs) => [
-            ...outputs,
-            {
-              fragment,
-              inputs,
-              result: error,
-              isError: true,
-            },
-          ]);
-        })
-        .finally(() => {
-          setFragment(undefined);
-          setInputs([]);
-        });
+      try {
+        contract.callStatic[fragment.name]!(...inputs)
+          .then((result) => {
+            setOutputs((outputs) => [
+              ...outputs,
+              {
+                fragment,
+                inputs,
+                result,
+              },
+            ]);
+          })
+          .catch((error) => {
+            setOutputs((outputs) => [
+              ...outputs,
+              {
+                fragment,
+                inputs,
+                result: error,
+                isError: true,
+              },
+            ]);
+          })
+          .finally(() => {
+            setFragment(undefined);
+            setInputs([]);
+          });
+      } catch (exception) {
+        console.warn('Something unexpected happened.');
+        setFragment(undefined);
+        setInputs([]);
+      }
     }
   }, [fragment, inputs]);
 
   return (
     <Box flexDirection="column">
+      <Text bold>Fn:</Text>
       {!fragment && (
         <Box flexDirection="column">
-          <Text backgroundColor={'white'}>Fn:</Text>
           <SelectInput
             items={fragmentItems}
             onSelect={handleFragmentSelect}
             limit={10}
           />
-          {fragmentItems.length > 10 && <Text>...</Text>}
+          {fragmentItems.length > 10 && <Text>{'\t↓'}</Text>}
         </Box>
       )}
 

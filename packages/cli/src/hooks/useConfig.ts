@@ -13,7 +13,7 @@ interface Config {
 
 export function useConfig(): Config {
   return useMemo(() => {
-    const pathToConfig = path.join(os.homedir() + '/.lensrc');
+    const pathToConfig = path.join(os.homedir() + '/.notarrc');
 
     if (!fs.existsSync(pathToConfig)) return {};
 

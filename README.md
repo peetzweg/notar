@@ -9,7 +9,7 @@ Project generated with [create-ink-app](https://github.com/vadimdemedes/create-i
 
 ## Configuration
 
-`notar` can be configured by creating a `.lensrc` file in your `$HOME` directory. The configuration should follow the [`ini` format](https://en.wikipedia.org/wiki/INI_file).
+`notar` can be configured by creating a `.notarrc` file in your `$HOME` directory. The configuration should follow the [`ini` format](https://en.wikipedia.org/wiki/INI_file).
 
 
 

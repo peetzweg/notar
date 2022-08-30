@@ -10,7 +10,7 @@
         "outputPath": "dist/packages/cli",
         "main": "packages/cli/src/main.ts",
         "tsConfig": "packages/cli/tsconfig.app.json",
-        "assets": ["packages/cli/src/assets", "packages/cli/package.json"]
+        "assets": ["packages/cli/package.json"]
       },
       "configurations": {
         "production": {

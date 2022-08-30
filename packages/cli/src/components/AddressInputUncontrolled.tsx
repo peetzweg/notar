@@ -1,6 +1,6 @@
 import { utils } from 'ethers';
 import { Box, Text } from 'ink';
-import TextInput from 'ink-text-input';
+import { UncontrolledTextInput } from 'ink-text-input';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 
 interface InputProps {
@@ -38,11 +38,7 @@ const AddressInput: FC<InputProps> = ({ address, onSuccess }) => {
         <Text bold>Address:</Text>
       </Box>
 
-      <TextInput
-        onChange={setValue}
-        value={value}
-        onSubmit={() => handleSubmit(value)}
-      />
+      <UncontrolledTextInput initialValue={address} onSubmit={handleSubmit} />
     </Box>
   );
 };

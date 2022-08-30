@@ -6,7 +6,16 @@ import AddressInput from './components/AddressInput';
 import FunctionSelect from './components/FunctionSelect';
 import NetworkSelect, { SelectedNetwork } from './components/NetworkSelect';
 
-const App: FC<{ address?: string }> = ({ address: argAddress }) => {
+interface AppProps {
+  address?: string;
+  abi?: string;
+  network?: string;
+}
+const App: FC<AppProps> = ({
+  address: argAddress,
+  abi: argABI,
+  network: argNetwork,
+}) => {
   const [address, setAddress] = useState<undefined | string>();
   const [network, selectNetwork] = useState<undefined | SelectedNetwork>();
   const [abi, setABI] = useState<
@@ -25,21 +34,43 @@ const App: FC<{ address?: string }> = ({ address: argAddress }) => {
   }, [address, abi, provider]);
 
   return (
-    <Box flexDirection="column" width={'100%'}>
-      <Box flexDirection="column" width={'50%'}>
-        <Box borderStyle="single" flexDirection="column">
-          <Text>Network: {network ? network.name : ''}</Text>
-          <Text>Address: {address || ''}</Text>
-          <Text>ABI: {abi?.label || ''}</Text>
-        </Box>
+    <Box flexDirection="column" width={'100%'} height={'100%'}>
+      <Box flexDirection="row" width={'100%'}>
+        {network && (
+          <Box>
+            <Text
+              backgroundColor={'#585858'}
+              color="white"
+              bold
+            >{` ${network.name} `}</Text>
+          </Box>
+        )}
+        {address && (
+          <Box>
+            <Text
+              backgroundColor={'#585858'}
+              color="white"
+              bold
+            >{`❯ ${address} `}</Text>
+          </Box>
+        )}
+        {abi && abi.label && (
+          <Box>
+            <Text
+              backgroundColor={'#585858'}
+              color="white"
+              bold
+            >{`❯ ${abi?.label} `}</Text>
+          </Box>
+        )}
       </Box>
       <Box flexDirection="column" width={'100%'}>
         {!provider ? (
-          <NetworkSelect onSuccess={selectNetwork} />
+          <NetworkSelect onSuccess={selectNetwork} network={argNetwork} />
         ) : !address ? (
           <AddressInput onSuccess={setAddress} address={argAddress} />
         ) : !abi ? (
-          <ABISelect onSuccess={setABI} />
+          <ABISelect onSuccess={setABI} abi={argABI} />
         ) : contract && abi?.value ? (
           <FunctionSelect contract={contract} />
         ) : null}
