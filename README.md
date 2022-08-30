@@ -1,11 +1,41 @@
-# notar
+# notar (npm-package: `notar-cli`)
 
-Proof of concept for command line debugging tool using [ink](https://github.com/vadimdemedes/ink) and [abimate](https://github.com/peetzweg/abimate).
+=> [npmjs.com/package/notar-cli](https://www.npmjs.com/package/notar-cli)
 
-Project generated with [create-ink-app](https://github.com/vadimdemedes/create-ink-app).
+Concept piece of software to interact with smart-contracts on EVM based chains directly from your terminal. This allows for quick access and shortcut building using the shell powers like [`alias`](https://man7.org/linux/man-pages/man1/alias.1p.html).
 
 
 ![demo](demo.gif)
+
+
+## How to Install
+
+```
+npm install --global notar-cli
+
+notar
+```
+
+or use it via `npx`
+
+```
+npx notar-cli
+```
+
+## How to Use
+
+```
+  Usage
+    $ notar
+
+  Options
+    --address, -a  preselect smart contract address
+    --network, -n  preselect network
+    --abi, -i  preselect abi
+
+  Examples
+    $ notar -n ethereum -a 0x956F47F50A910163D8BF957Cf5846D573E7f87CA -i ERC20
+```
 
 ## Configuration
 
@@ -15,13 +45,12 @@ Project generated with [create-ink-app](https://github.com/vadimdemedes/create-i
 
 Example Config
 ```ini
-; Global definition of folder which contains `ethers` compatible ABIs.
-abi_dir=~/.abis
+; Global
+abi_dir=~/.abis ; Folder which contains `ethers` compatible ABIs
 
-;Section header => network name
-[bsc]
-;network rpc url
-rpc=https://bsc-dataseed.binance.org/
+; Sections
+[bsc] ; Section header => network name
+rpc=https://bsc-dataseed.binance.org/ ; rpc url
 
 [moonbeam]
 rpc=https://moonbeam.public.blastapi.io
@@ -32,8 +61,6 @@ rpc=https://rpc-mainnet.matic.quiknode.pro
 
 
 
-## Install & Contribute
+## Special Thanks
 
-`npm install`
-
-`npm run start`
+This cli is built with [ink](https://github.com/vadimdemedes/ink), [abimate](https://github.com/peetzweg/abimate) and [ethers](https://github.com/ethers-io/ethers.js/).
