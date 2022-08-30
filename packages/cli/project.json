@@ -1,0 +1,87 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/cli",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/cli",
+        "main": "packages/cli/src/main.ts",
+        "tsConfig": "packages/cli/tsconfig.app.json",
+        "assets": ["packages/cli/src/assets", "packages/cli/package.json"]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "packages/cli/src/environments/environment.ts",
+              "with": "packages/cli/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "pkg": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": ["dist/packages/cli/notar"],
+      "options": {
+        "command": "pkg dist/packages/cli/main.js -t node16-macos-arm64 -o dist/packages/cli/notar",
+        "outputPath": "dist/packages/cli"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
+    },
+    "serve": {
+      "executor": "@nrwl/node:node",
+      "options": {
+        "buildTarget": "cli:build"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "cli:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/cli/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/cli"],
+      "options": {
+        "jestConfig": "packages/cli/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node tools/scripts/publish.mjs cli {args.ver} {args.tag}"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        },
+        {
+          "projects": "self",
+          "target": "pkg"
+        }
+      ]
+    }
+  },
+  "tags": []
+}

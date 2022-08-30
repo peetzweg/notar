@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist/out-tsc",
+    "module": "commonjs",
+    "types": ["node"],
+    "esModuleInterop":true,
+		"jsx": "react",
+  },
+  "exclude": ["jest.config.ts", "**/*.spec.ts", "**/*.test.ts"],
+  "include": ["**/*.ts"]
+}

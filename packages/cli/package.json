@@ -1,0 +1,9 @@
+{
+  "name": "notar-cli",
+  "version": "0.2.0",
+  "bin":{
+    "notar":"notar"
+  },
+  "type": "commonjs",
+  "homepage": "https://github.com/peetzweg/notar"
+}

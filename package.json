@@ -1,61 +1,47 @@
 {
-	"name": "lens",
-	"version": "1.0.0",
-	"license": "MIT",
-	"engines": {
-		"node": ">=10"
-	},
-	"scripts": {
-		"build": "tsc && chmod +x dist/cli.js",
-		"start": "npm run build && dist/cli.js",
-		"pretest": "npm run build",
-		"prepare": "npm run build",
-		"test": "xo && ava"
-	},
-	"bin": "dist/cli.js",
-	"files": [
-		"dist/cli.js"
-	],
-	"dependencies": {
-		"@abimate/solmate": "^0.0.5",
-		"dotenv": "^16.0.1",
-		"ethers": "^5.6.9",
-		"ini": "^3.0.1",
-		"ink": "^3.2.0",
-		"ink-select-input": "^4.2.1",
-		"ink-spinner": "^4.0.3",
-		"ink-text-input": "^4.0.3",
-		"meow": "^9.0.0",
-		"react": "^17.0.2"
-	},
-	"ava": {
-		"typescript": {
-			"extensions": [
-				"tsx"
-			],
-			"rewritePaths": {
-				"src/": "dist/"
-			}
-		}
-	},
-	"xo": {
-		"extends": "xo-react",
-		"rules": {
-			"react/prop-types": "off"
-		}
-	},
-	"devDependencies": {
-		"@ava/typescript": "^3.0.1",
-		"@sindresorhus/tsconfig": "^3.0.1",
-		"@types/ini": "^1.3.31",
-		"@types/react": "^18.0.14",
-		"ava": "^4.3.0",
-		"chalk": "^4.1.2",
-		"eslint-config-xo-react": "^0.27.0",
-		"eslint-plugin-react": "^7.30.1",
-		"eslint-plugin-react-hooks": "^4.6.0",
-		"ink-testing-library": "^2.1.0",
-		"typescript": "^4.7.4",
-		"xo": "^0.39.1"
-	}
+  "name": "notar",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {},
+  "private": true,
+  "dependencies": {
+    "@abimate/solmate": "^0.0.5",
+    "@swc/helpers": "~0.3.3",
+    "ethers": "^5.7.0",
+    "ini": "^3.0.1",
+    "ink": "^3.2.0",
+    "ink-select-input": "^4.2.1",
+    "ink-spinner": "^4.0.3",
+    "ink-text-input": "^4.0.3",
+    "meow": "^9.0.0",
+    "pkg": "^5.8.0",
+    "react": "^17.0.2",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@nrwl/cli": "14.5.10",
+    "@nrwl/eslint-plugin-nx": "14.5.10",
+    "@nrwl/jest": "14.5.10",
+    "@nrwl/js": "14.5.10",
+    "@nrwl/linter": "14.5.10",
+    "@nrwl/node": "14.5.10",
+    "@nrwl/workspace": "14.5.10",
+    "@swc/cli": "~0.1.55",
+    "@swc/core": "^1.2.173",
+    "@swc/jest": "0.2.20",
+    "@types/ini": "^1.3.31",
+    "@types/jest": "27.4.1",
+    "@types/node": "16.11.7",
+    "@types/react": "^18.0.17",
+    "@typescript-eslint/eslint-plugin": "^5.29.0",
+    "@typescript-eslint/parser": "^5.29.0",
+    "eslint": "~8.15.0",
+    "eslint-config-prettier": "8.1.0",
+    "jest": "27.5.1",
+    "nx": "14.5.10",
+    "prettier": "^2.6.2",
+    "ts-jest": "27.1.4",
+    "ts-node": "10.9.1",
+    "typescript": "~4.7.2"
+  }
 }
