@@ -14,7 +14,7 @@ async function getFiles(dir: string): Promise<Array<string>> {
       return dirent.isDirectory() ? getFiles(res) : res;
     })
   );
-  return Array<string>.prototype.concat(...files);
+  return [...files].flat();
 }
 
 const readABIs = async (path: string) => {

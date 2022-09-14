@@ -7,10 +7,12 @@
       "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "externalDependencies": "none",
         "outputPath": "dist/packages/cli",
         "main": "packages/cli/src/main.ts",
         "tsConfig": "packages/cli/tsconfig.app.json",
-        "assets": ["packages/cli/package.json"]
+        "assets": ["packages/cli/package.json"],
+        "webpackConfig":"packages/cli/custom-webpack.config.js"
       },
       "configurations": {
         "production": {
@@ -25,20 +27,6 @@
           ]
         }
       }
-    },
-    "pkg": {
-      "executor": "@nrwl/workspace:run-commands",
-      "outputs": ["dist/packages/cli/notar"],
-      "options": {
-        "command": "pkg dist/packages/cli/main.js -t node16-macos-arm64 -o dist/packages/cli/notar",
-        "outputPath": "dist/packages/cli"
-      },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "build"
-        }
-      ]
     },
     "serve": {
       "executor": "@nrwl/node:node",
@@ -75,10 +63,6 @@
         {
           "projects": "self",
           "target": "build"
-        },
-        {
-          "projects": "self",
-          "target": "pkg"
         }
       ]
     }
