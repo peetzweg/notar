@@ -4,7 +4,7 @@ import App from './App';
 import commandLineArgs from 'command-line-args';
 
 const options = commandLineArgs([
-  { name: 'address', alias: 'a', type: String },
+  { name: 'address', alias: 'a', type: String, defaultOption: true },
   { name: 'network', alias: 'n', type: String },
   { name: 'abi', alias: 'i', type: String },
 ]);
