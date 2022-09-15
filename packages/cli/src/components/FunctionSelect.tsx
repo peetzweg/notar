@@ -149,12 +149,13 @@ const FunctionSelect: FC<{ contract: Contract }> = ({ contract }) => {
   );
 };
 
-function renderResult(output: CallOutput) {
+function renderResult(output: CallOutput): string {
   if (output.isError) {
+    console.error(output.result);
     if (output.result.code) {
       return output.result.code;
     } else {
-      ('ERROR');
+      return 'UNKNOWN_ERROR';
     }
   }
 
