@@ -2,10 +2,14 @@
 
 => [npmjs.com/package/notar-cli](https://www.npmjs.com/package/notar-cli)
 
-Concept piece of software to interact with smart-contracts on EVM based chains directly from your terminal. This allows for quick access and shortcut building using the shell powers like [`alias`](https://man7.org/linux/man-pages/man1/alias.1p.html).
+Concept piece of software to interact with smart-contracts on EVM based chains directly from your terminal. This allows for quick access and shortcut building using the shell builtins like [`alias`](https://man7.org/linux/man-pages/man1/alias.1p.html).
 
 
 ![demo](demo.gif)
+
+Create custom `token` command to inspect ERC20 tokens:
+
+![alias demo](demo_alias.gif)
 
 
 ## How to Install
@@ -39,9 +43,9 @@ npx notar-cli
 
 ## Configuration
 
-`notar` can be configured by creating a `.notarrc` file in your `$HOME` directory. The configuration should follow the [`ini` format](https://en.wikipedia.org/wiki/INI_file).
+`notar` has an default ethereum RPC setup (https://rpc.ankr.com/eth) and packaged with some [ABIs](https://github.com/peetzweg/notar/blob/6647ccdb9b5b6532bcf681580bbb93477a219aa9/packages/cli/src/components/ABISelect.tsx#L8-L13) out of the box.
 
-
+However, `notar` can be configured to your liking by creating a `.notarrc` file in your `$HOME` directory. The configuration should follow the [`ini` format](https://en.wikipedia.org/wiki/INI_file). You can easily add your own ABI files as well as connect to other EVM compatible networks.
 
 Example Config
 ```ini
@@ -52,11 +56,12 @@ abi_dir=~/.abis ; Folder which contains `ethers` compatible ABIs
 [bsc] ; Section header => network name
 rpc=https://bsc-dataseed.binance.org/ ; rpc url
 
+[polygon]
+rpc=https://rpc-mainnet.matic.quiknode.pro
+
 [moonbeam]
 rpc=https://moonbeam.public.blastapi.io
 
-[polygon]
-rpc=https://rpc-mainnet.matic.quiknode.pro
 ```
 
 
