@@ -4,13 +4,11 @@
 
 Concept piece of software to interact with smart-contracts on EVM based chains directly from your terminal. This allows for quick access and shortcut building using the shell builtins like [`alias`](https://man7.org/linux/man-pages/man1/alias.1p.html).
 
-
-![demo](demo.gif)
+![demo](https://user-images.githubusercontent.com/7098556/192083999-e831199f-2479-4ed3-aef9-2f849975f2ae.gif)
 
 Create custom `token` command to inspect ERC20 tokens:
 
-![alias demo](demo_alias.gif)
-
+![demo_alias](https://user-images.githubusercontent.com/7098556/192084005-57dd3ee0-51ef-4f14-9e81-0f9a7ed69ff8.gif)
 
 ## How to Install
 
