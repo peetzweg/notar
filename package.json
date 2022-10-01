@@ -2,7 +2,9 @@
   "name": "notar",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "lint":"nx lint cli"
+  },
   "private": true,
   "dependencies": {
     "@abimate/solmate": "^0.0.5",
