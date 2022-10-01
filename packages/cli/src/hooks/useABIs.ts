@@ -24,9 +24,13 @@ const readABIs = async (path: string) => {
   const ABIs: Record<string, Array<ABIDefinition>> = {};
   await Promise.all(
     filepaths.map((f) =>
-      readFile(f, { encoding: 'utf8' }).then((buffer) => {
-        ABIs[basename(f, '.json')] = JSON.parse(buffer.toString())['abi'];
-      })
+      readFile(f, { encoding: 'utf8' })
+        .then((buffer) => {
+          ABIs[basename(f, '.json')] = JSON.parse(buffer.toString())['abi'];
+        })
+        .catch(() =>
+          console.warn(`${f} does not contain a valid ABI definition`)
+        )
     )
   );
   return ABIs;
