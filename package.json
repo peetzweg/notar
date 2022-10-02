@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "lint":"nx lint cli",
-    "publish":"nx publish cli --ver $PACKAGE_VERSION"
+    "publish":"nx publish cli --ver $PACKAGE_VERSION --tag latest"
   },
   "private": true,
   "dependencies": {
