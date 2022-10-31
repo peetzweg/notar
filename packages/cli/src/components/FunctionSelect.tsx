@@ -1,5 +1,5 @@
 import { BigNumber, Contract } from 'ethers';
-import { Fragment } from 'ethers/lib/utils';
+import { FunctionFragment } from 'ethers/lib/utils';
 import { Box, Static, Text } from 'ink';
 import SelectInput from 'ink-select-input';
 
@@ -9,18 +9,18 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 interface Item {
   label: string;
-  value: Fragment;
+  value: FunctionFragment;
 }
 
 interface CallOutput {
-  fragment: Fragment;
+  fragment: FunctionFragment;
   inputs: Array<any>;
   result: any;
   isError?: boolean;
 }
 
 const FunctionSelect: FC<{ contract: Contract }> = ({ contract }) => {
-  const [fragment, setFragment] = useState<Fragment | undefined>();
+  const [fragment, setFragment] = useState<FunctionFragment | undefined>();
   const [input, setInput] = useState<string>('');
   const [inputs, setInputs] = useState<Array<any>>([]);
   const [outputs, setOutputs] = useState<Array<CallOutput>>([]);
@@ -34,7 +34,7 @@ const FunctionSelect: FC<{ contract: Contract }> = ({ contract }) => {
             .map((i) => i.name || i.type)
             .join(', ')})`,
           key: fragment.name + fragment.type + index,
-          value: fragment,
+          value: fragment as FunctionFragment,
         })),
     [contract]
   );
@@ -54,6 +54,7 @@ const FunctionSelect: FC<{ contract: Contract }> = ({ contract }) => {
   useEffect(() => {
     if (fragment && inputs.length === fragment.inputs.length) {
       try {
+        console.log({ fragment, output: fragment.outputs });
         contract.callStatic[fragment.name]!(...inputs)
           .then((result) => {
             setOutputs((outputs) => [
@@ -131,16 +132,15 @@ const FunctionSelect: FC<{ contract: Contract }> = ({ contract }) => {
 
       <Static items={outputs}>
         {(output, index) => (
-          <Box key={index}>
+          <Box key={index} flexDirection="column">
             <Text color={output.isError ? 'red' : 'green'}>{`${
               output.fragment.name
             }(${output.fragment.inputs
               .map((input, index) => inputs[index] || input.type)
-              .join(', ')})`}</Text>
-
+              .join(', ')}) =>`}</Text>
+            <br />
             <Text bold color={output.isError ? 'red' : 'green'}>
-              {' '}
-              = {renderResult(output)}
+              {renderResult(output)}
             </Text>
           </Box>
         )}
@@ -163,7 +163,7 @@ function renderResult(output: CallOutput): string {
     return output.result.toString();
   }
 
-  return JSON.stringify(output.result);
+  return JSON.stringify(output.result, null, 2);
 }
 
 export default FunctionSelect;

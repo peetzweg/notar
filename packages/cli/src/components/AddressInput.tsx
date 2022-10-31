@@ -16,6 +16,7 @@ const AddressInput: FC<InputProps> = ({ address, onSuccess }) => {
       try {
         const validAddress = utils.getAddress(rawAddress);
         if (validAddress) {
+          console.log('valid');
           onSuccess(validAddress);
         }
       } catch (e) {

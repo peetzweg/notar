@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 
+import { ContractInterface } from 'ethers';
 import { readdir, readFile } from 'fs/promises';
-import { resolve, basename } from 'path';
+import { basename, resolve } from 'path';
 import { useConfig } from './useConfig';
-
-type ABIDefinition = unknown;
 
 async function getFiles(dir: string): Promise<Array<string>> {
   const dirents = await readdir(dir, { withFileTypes: true });
@@ -21,11 +20,12 @@ const readABIs = async (path: string) => {
   const filepaths = (await getFiles(path)).filter((path) =>
     path.endsWith('.json')
   );
-  const ABIs: Record<string, Array<ABIDefinition>> = {};
+  const ABIs: Record<string, Array<ContractInterface>> = {};
   await Promise.all(
     filepaths.map((f) =>
       readFile(f, { encoding: 'utf8' })
         .then((buffer) => {
+          // TODO check if array of Fragments
           ABIs[basename(f, '.json')] = JSON.parse(buffer.toString())['abi'];
         })
         .catch(() =>

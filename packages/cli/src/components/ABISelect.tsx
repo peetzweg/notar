@@ -1,4 +1,5 @@
 import { ERC20ABI, ERC4626ABI, ERC721ABI, ERC1155ABI } from '@abimate/solmate';
+import { ContractInterface } from 'ethers';
 import { Box, Text } from 'ink';
 import SelectInput from 'ink-select-input';
 import React, { FC, useCallback, useEffect, useMemo } from 'react';
@@ -12,15 +13,20 @@ const DEFAULT_ABIs = {
   ERC4626: ERC4626ABI,
 };
 
+export interface ABIItem {
+  label: string;
+  value: ContractInterface;
+}
+
 interface ABISelectProps {
-  onSuccess: (item: any) => void;
+  onSuccess: (item: ABIItem) => void;
   abi?: string;
 }
 
 const ABISelect: FC<ABISelectProps> = ({ onSuccess, abi }) => {
   const { abis, isLoading } = useABIs();
 
-  const items = useMemo(() => {
+  const items: ABIItem[] = useMemo(() => {
     return Object.entries({ ...DEFAULT_ABIs, ...abis })
       .map(([label, value]) => ({
         label,
@@ -31,7 +37,7 @@ const ABISelect: FC<ABISelectProps> = ({ onSuccess, abi }) => {
   }, [abis, isLoading]);
 
   const handleSelect = useCallback(
-    (item: any) => {
+    (item: ABIItem) => {
       onSuccess(item);
     },
     [onSuccess]

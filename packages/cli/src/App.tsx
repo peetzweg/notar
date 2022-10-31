@@ -1,10 +1,10 @@
-import { Contract, ContractInterface, providers } from 'ethers';
 import { Box, Text } from 'ink';
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC } from 'react';
 import ABISelect from './components/ABISelect';
 import AddressInput from './components/AddressInput';
 import FunctionSelect from './components/FunctionSelect';
-import NetworkSelect, { SelectedNetwork } from './components/NetworkSelect';
+import NetworkSelect from './components/NetworkSelect';
+import { useNotar } from './context/NotarContext';
 
 interface AppProps {
   address?: string;
@@ -12,26 +12,11 @@ interface AppProps {
   network?: string;
 }
 const App: FC<AppProps> = ({
-  address: argAddress,
-  abi: argABI,
-  network: argNetwork,
+  address: addressArg,
+  abi: abiArg,
+  network: networkArg,
 }) => {
-  const [address, setAddress] = useState<undefined | string>();
-  const [network, selectNetwork] = useState<undefined | SelectedNetwork>();
-  const [abi, setABI] = useState<
-    undefined | { label: string; value: ContractInterface }
-  >();
-  const [contract, setContract] = useState<Contract | undefined>(undefined);
-  const provider = useMemo(() => {
-    if (!network) return;
-    return new providers.JsonRpcProvider(network.rpc);
-  }, [network]);
-
-  useEffect(() => {
-    if (address && abi) {
-      setContract(new Contract(address, abi.value, provider));
-    }
-  }, [address, abi, provider]);
+  const [{ address, abi, network, contract }, setState] = useNotar();
 
   return (
     <Box flexDirection="column" width={'100%'} height={'100%'}>
@@ -65,13 +50,25 @@ const App: FC<AppProps> = ({
         )}
       </Box>
       <Box flexDirection="column" width={'100%'}>
-        {!provider ? (
-          <NetworkSelect onSuccess={selectNetwork} network={argNetwork} />
+        {!network ? (
+          <NetworkSelect
+            onSuccess={(network) =>
+              setState({
+                network,
+              })
+            }
+            network={networkArg}
+          />
         ) : !address ? (
-          <AddressInput onSuccess={setAddress} address={argAddress} />
+          <AddressInput
+            onSuccess={(address) => {
+              setState({ address });
+            }}
+            address={addressArg}
+          />
         ) : !abi ? (
-          <ABISelect onSuccess={setABI} abi={argABI} />
-        ) : contract && abi?.value ? (
+          <ABISelect onSuccess={(abi) => setState({ abi })} abi={abiArg} />
+        ) : contract ? (
           <FunctionSelect contract={contract} />
         ) : null}
       </Box>
