@@ -54,7 +54,6 @@ const FunctionSelect: FC<{ contract: Contract }> = ({ contract }) => {
   useEffect(() => {
     if (fragment && inputs.length === fragment.inputs.length) {
       try {
-        console.log({ fragment, output: fragment.outputs });
         contract.callStatic[fragment.name]!(...inputs)
           .then((result) => {
             setOutputs((outputs) => [
@@ -159,11 +158,39 @@ function renderResult(output: CallOutput): string {
     }
   }
 
-  if (BigNumber.isBigNumber(output.result)) {
-    return output.result.toString();
-  }
+  const { result } = output;
 
-  return JSON.stringify(output.result, null, 2);
+  const transformedResult = transform(result);
+
+  return JSON.stringify(transformedResult, null, 2);
 }
+
+function transform(value: unknown) {
+  if (Array.isArray(value)) {
+    const entries = Object.entries(value);
+
+    return entries.reduce((acc, [k, v], index) => {
+      console.log({ k, v });
+      return { ...acc, [k]: transform(v) };
+    }, {});
+  } else {
+    if (BigNumber.isBigNumber(value)) {
+      return `${value.toString()} (${value.toHexString()})`;
+    }
+    return value;
+  }
+}
+
+// function transformPrev(value: unknown) {
+//   console.log({ value, entries: Object.entries(value) });
+//   if (Array.isArray(value)) {
+//     return value.map((element, index) => transform(element));
+//   } else {
+//     if (BigNumber.isBigNumber(value)) {
+//       return `${value.toString()} (${value.toHexString()})`;
+//     }
+//     return value;
+//   }
+// }
 
 export default FunctionSelect;
