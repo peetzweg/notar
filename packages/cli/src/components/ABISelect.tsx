@@ -26,7 +26,11 @@ interface ABISelectProps {
 
 const ABISelect: FC<ABISelectProps> = ({ onSuccess, abi }) => {
   const { abis: abiFiles, isLoading } = useABIs();
-  const { abi: etherscanABI } = useEtherscan();
+  const {
+    abi: etherscanABI,
+    isLoading: etherscanLoading,
+    error: etherscanError,
+  } = useEtherscan();
 
   const selectItemsOfABIFiles: ABIItem[] = useMemo(
     () =>
@@ -40,21 +44,28 @@ const ABISelect: FC<ABISelectProps> = ({ onSuccess, abi }) => {
     [abiFiles]
   );
   const selectItemABIEtherscan: ABIItem = useMemo(() => {
-    if (etherscanABI)
-      return {
-        label: 'ABI from Etherscan',
-        value: etherscanABI,
-        key: 'etherscan',
-      };
-  }, [etherscanABI]);
+    let label = 'ABI from Etherscan';
+    if (etherscanLoading) {
+      label += ' (loading)';
+    }
+    if (etherscanError) {
+      label += ` (${etherscanError})`;
+    }
+
+    return {
+      label,
+      value: etherscanABI,
+      key: 'etherscan',
+    };
+  }, [etherscanABI, etherscanError, etherscanLoading]);
 
   const allSelectItems: ABIItem[] = useMemo(() => {
-    return [...selectItemsOfABIFiles, selectItemABIEtherscan].filter(Boolean);
+    return [selectItemABIEtherscan, ...selectItemsOfABIFiles].filter(Boolean);
   }, [selectItemsOfABIFiles, selectItemABIEtherscan]);
 
   const handleSelect = useCallback(
     (item: ABIItem) => {
-      onSuccess(item);
+      if (item.value) onSuccess(item);
     },
     [onSuccess]
   );

@@ -26,7 +26,7 @@ export const useEtherscan = (): UserEtherscanResult => {
 
   useEffect(() => {
     if (!scan_api_key || !scan_url) {
-      setState({ isLoading: false, error: 'No scanner setup' });
+      setState({ isLoading: false, error: 'Setup in config first' });
       return;
     }
     setState({ isLoading: true });
@@ -38,8 +38,9 @@ export const useEtherscan = (): UserEtherscanResult => {
         setState({ isLoading: false, abi });
       })
       .catch((error) => {
-        console.error({ error });
-        setState({ isLoading: false, error });
+        // TODO only on verbose
+        // console.error({ error });
+        setState({ isLoading: false, error: 'Not available' });
       });
   }, [scan_api_key, scan_url]);
 
