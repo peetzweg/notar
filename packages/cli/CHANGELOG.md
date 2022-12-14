@@ -1,5 +1,17 @@
 # Change Log
 
+## [1.2.0] - 2022-12-14
+
+### Added
+
++ ability to fetch ABIs from Etherscan services, needs `scan_url` and `scan_api_key` to be set for chain in the `.notarrc` file
+
++ navigate to previous step via left arrow key
+
+### Changed
+
++ formats call responses differently. Successfully responses as well as call exceptions should be better readable
+
 ## [1.1.4] - 2022-10-02
 
 ### Fixed
