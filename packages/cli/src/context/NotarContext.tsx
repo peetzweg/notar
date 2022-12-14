@@ -46,18 +46,29 @@ export const NotarContextProvider = ({
       setState((prevState) => {
         const newState = { ...prevState, ...newContext };
 
-        // Create Provider and Contract if everything is available
-        if (newState.address && newState.abi && newState.network) {
+        if (newState.network && !newState.provider) {
           newState.provider = new providers.JsonRpcProvider(
             newState.network.rpc
           );
-
-          newState.contract = new Contract(
-            newState.address,
-            newState.abi.value,
-            newState.provider
-          );
         }
+
+        if (
+          newState.abi &&
+          !newState.contract &&
+          newState.provider &&
+          newState.address
+        ) {
+          try {
+            newState.contract = new Contract(
+              newState.address,
+              newState.abi.value,
+              newState.provider
+            );
+          } catch (exception) {
+            console.error(exception);
+          }
+        }
+
         return newState;
       });
     },

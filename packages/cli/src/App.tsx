@@ -39,13 +39,13 @@ const App: FC<AppProps> = ({
             >{`❯ ${address} `}</Text>
           </Box>
         )}
-        {abi && abi.label && (
+        {abi && (
           <Box>
             <Text
               backgroundColor={'#585858'}
               color="white"
               bold
-            >{`❯ ${abi?.label} `}</Text>
+            >{`❯ ${abi.label} `}</Text>
           </Box>
         )}
       </Box>

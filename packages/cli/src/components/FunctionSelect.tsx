@@ -137,7 +137,7 @@ const FunctionSelect: FC<{ contract: Contract }> = ({ contract }) => {
             }(${output.fragment.inputs
               .map((input, index) => inputs[index] || input.type)
               .join(', ')}) =>`}</Text>
-            <br />
+
             <Text bold color={output.isError ? 'red' : 'green'}>
               {renderResult(output)}
             </Text>
@@ -180,17 +180,5 @@ function transform(value: unknown) {
     return value;
   }
 }
-
-// function transformPrev(value: unknown) {
-//   console.log({ value, entries: Object.entries(value) });
-//   if (Array.isArray(value)) {
-//     return value.map((element, index) => transform(element));
-//   } else {
-//     if (BigNumber.isBigNumber(value)) {
-//       return `${value.toString()} (${value.toHexString()})`;
-//     }
-//     return value;
-//   }
-// }
 
 export default FunctionSelect;
