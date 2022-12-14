@@ -138,9 +138,7 @@ const FunctionSelect: FC<{ contract: Contract }> = ({ contract }) => {
               .map((input, index) => inputs[index] || input.type)
               .join(', ')}) =>`}</Text>
 
-            <Text bold color={output.isError ? 'red' : 'green'}>
-              {renderResult(output)}
-            </Text>
+            <Text>{renderResult(output)}</Text>
           </Box>
         )}
       </Static>
@@ -150,9 +148,14 @@ const FunctionSelect: FC<{ contract: Contract }> = ({ contract }) => {
 
 function renderResult(output: CallOutput): string {
   if (output.isError) {
-    console.error(output.result);
     if (output.result.code) {
-      return output.result.code;
+      const transformedError = transform({
+        reason: output.result.reason,
+        code: output.result.code,
+        data: output.result.data,
+        transaction: output.result.transaction,
+      });
+      return JSON.stringify(transformedError, null, 2);
     } else {
       return 'UNKNOWN_ERROR';
     }
@@ -170,7 +173,6 @@ function transform(value: unknown) {
     const entries = Object.entries(value);
 
     return entries.reduce((acc, [k, v], index) => {
-      console.log({ k, v });
       return { ...acc, [k]: transform(v) };
     }, {});
   } else {
