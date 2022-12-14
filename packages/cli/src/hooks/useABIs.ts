@@ -28,10 +28,10 @@ const readABIs = async (path: string) => {
           // TODO check if array of Fragments
           ABIs[basename(f, '.json')] = JSON.parse(buffer.toString())['abi'];
         })
-        .catch(() =>
+        .catch(() => {
           // TODO only if verbose flag is set
           // console.warn(`${f} does not contain a valid ABI definition`)
-        )
+        })
     )
   );
   return ABIs;
