@@ -7,6 +7,7 @@ import SelectInput from 'ink-select-input';
 import React, { FC, useCallback, useEffect, useMemo } from 'react';
 import { useABIs } from '../hooks/useABIs';
 import { useEtherscan } from '../hooks/useEtherscan';
+import { useOnBack } from '../hooks/useOnBack';
 
 const SELECT_ITEMS_DEFAULT_ABIs = [
   {
@@ -33,10 +34,12 @@ export interface ABIItem {
 
 interface ABISelectProps {
   onSuccess: (item: ABIItem) => void;
+  onBack: () => void;
   abi?: string;
 }
 
-const ABISelect: FC<ABISelectProps> = ({ onSuccess, abi }) => {
+const ABISelect: FC<ABISelectProps> = ({ onSuccess, abi, onBack }) => {
+  useOnBack(onBack);
   const { abis: abiFiles, isLoading } = useABIs();
   const {
     abi: etherscanABI,

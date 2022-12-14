@@ -64,12 +64,20 @@ const App: FC<AppProps> = ({
             onSuccess={(address) => {
               setState({ address });
             }}
+            onBack={() => setState({ network: undefined })}
             address={addressArg}
           />
         ) : !abi ? (
-          <ABISelect onSuccess={(abi) => setState({ abi })} abi={abiArg} />
+          <ABISelect
+            onSuccess={(abi) => setState({ abi })}
+            abi={abiArg}
+            onBack={() => setState({ address: undefined })}
+          />
         ) : contract ? (
-          <FunctionSelect contract={contract} />
+          <FunctionSelect
+            contract={contract}
+            onBack={() => setState({ abi: undefined })}
+          />
         ) : null}
       </Box>
     </Box>

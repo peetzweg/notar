@@ -1,11 +1,12 @@
 import { BigNumber, Contract } from 'ethers';
 import { FunctionFragment } from 'ethers/lib/utils';
-import { Box, Static, Text } from 'ink';
+import { Box, Static, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
 
 import TextInput from 'ink-text-input';
 
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useOnBack } from '../hooks/useOnBack';
 
 interface Item {
   label: string;
@@ -19,7 +20,13 @@ interface CallOutput {
   isError?: boolean;
 }
 
-const FunctionSelect: FC<{ contract: Contract }> = ({ contract }) => {
+interface FunctionSelectProps {
+  onBack: () => void;
+  contract: Contract;
+}
+
+const FunctionSelect = ({ contract, onBack }: FunctionSelectProps) => {
+  useOnBack(onBack);
   const [fragment, setFragment] = useState<FunctionFragment | undefined>();
   const [input, setInput] = useState<string>('');
   const [inputs, setInputs] = useState<Array<any>>([]);

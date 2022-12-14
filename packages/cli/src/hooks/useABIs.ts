@@ -30,7 +30,7 @@ const readABIs = async (path: string) => {
         })
         .catch(() =>
           // TODO only if verbose flag is set
-          console.warn(`${f} does not contain a valid ABI definition`)
+          // console.warn(`${f} does not contain a valid ABI definition`)
         )
     )
   );
