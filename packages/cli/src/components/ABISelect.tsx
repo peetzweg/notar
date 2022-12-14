@@ -8,11 +8,23 @@ import React, { FC, useCallback, useEffect, useMemo } from 'react';
 import { useABIs } from '../hooks/useABIs';
 import { useEtherscan } from '../hooks/useEtherscan';
 
-const DEFAULT_ABIs = {
-  ERC1155,
-  ERC20,
-  ERC721,
-};
+const SELECT_ITEMS_DEFAULT_ABIs = [
+  {
+    label: 'ERC1155 (solmate)',
+    value: ERC1155,
+    key: 'ERC1155 (solmate)',
+  },
+  {
+    label: 'ERC721 (solmate)',
+    value: ERC721,
+    key: 'ERC721 (solmate)',
+  },
+  {
+    label: 'ERC20 (solmate)',
+    value: ERC20,
+    key: 'ERC20 (solmate)',
+  },
+];
 
 export interface ABIItem {
   label: string;
@@ -34,10 +46,10 @@ const ABISelect: FC<ABISelectProps> = ({ onSuccess, abi }) => {
 
   const selectItemsOfABIFiles: ABIItem[] = useMemo(
     () =>
-      Object.entries({ ...DEFAULT_ABIs, ...abiFiles })
+      Object.entries({ ...abiFiles })
         .map(([label, value]) => ({
           label,
-          value,
+          value: value as ContractInterface,
           key: label,
         }))
         .sort((a, b) => a.label.localeCompare(b.label)),
@@ -60,8 +72,16 @@ const ABISelect: FC<ABISelectProps> = ({ onSuccess, abi }) => {
   }, [etherscanABI, etherscanError, etherscanLoading]);
 
   const allSelectItems: ABIItem[] = useMemo(() => {
-    return [selectItemABIEtherscan, ...selectItemsOfABIFiles].filter(Boolean);
-  }, [selectItemsOfABIFiles, selectItemABIEtherscan]);
+    return [
+      selectItemABIEtherscan,
+      ...selectItemsOfABIFiles,
+      ...SELECT_ITEMS_DEFAULT_ABIs,
+    ].filter(Boolean);
+  }, [
+    selectItemsOfABIFiles,
+    selectItemABIEtherscan,
+    SELECT_ITEMS_DEFAULT_ABIs,
+  ]);
 
   const handleSelect = useCallback(
     (item: ABIItem) => {
