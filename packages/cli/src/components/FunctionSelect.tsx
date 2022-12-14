@@ -1,26 +1,33 @@
 import { BigNumber, Contract } from 'ethers';
-import { Fragment } from 'ethers/lib/utils';
-import { Box, Static, Text } from 'ink';
+import { FunctionFragment } from 'ethers/lib/utils';
+import { Box, Static, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
 
 import TextInput from 'ink-text-input';
 
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useOnBack } from '../hooks/useOnBack';
 
 interface Item {
   label: string;
-  value: Fragment;
+  value: FunctionFragment;
 }
 
 interface CallOutput {
-  fragment: Fragment;
+  fragment: FunctionFragment;
   inputs: Array<any>;
   result: any;
   isError?: boolean;
 }
 
-const FunctionSelect: FC<{ contract: Contract }> = ({ contract }) => {
-  const [fragment, setFragment] = useState<Fragment | undefined>();
+interface FunctionSelectProps {
+  onBack: () => void;
+  contract: Contract;
+}
+
+const FunctionSelect = ({ contract, onBack }: FunctionSelectProps) => {
+  useOnBack(onBack);
+  const [fragment, setFragment] = useState<FunctionFragment | undefined>();
   const [input, setInput] = useState<string>('');
   const [inputs, setInputs] = useState<Array<any>>([]);
   const [outputs, setOutputs] = useState<Array<CallOutput>>([]);
@@ -34,7 +41,7 @@ const FunctionSelect: FC<{ contract: Contract }> = ({ contract }) => {
             .map((i) => i.name || i.type)
             .join(', ')})`,
           key: fragment.name + fragment.type + index,
-          value: fragment,
+          value: fragment as FunctionFragment,
         })),
     [contract]
   );
@@ -131,17 +138,14 @@ const FunctionSelect: FC<{ contract: Contract }> = ({ contract }) => {
 
       <Static items={outputs}>
         {(output, index) => (
-          <Box key={index}>
+          <Box key={index} flexDirection="column">
             <Text color={output.isError ? 'red' : 'green'}>{`${
               output.fragment.name
             }(${output.fragment.inputs
               .map((input, index) => inputs[index] || input.type)
-              .join(', ')})`}</Text>
+              .join(', ')}) =>`}</Text>
 
-            <Text bold color={output.isError ? 'red' : 'green'}>
-              {' '}
-              = {renderResult(output)}
-            </Text>
+            <Text>{renderResult(output)}</Text>
           </Box>
         )}
       </Static>
@@ -151,19 +155,40 @@ const FunctionSelect: FC<{ contract: Contract }> = ({ contract }) => {
 
 function renderResult(output: CallOutput): string {
   if (output.isError) {
-    console.error(output.result);
     if (output.result.code) {
-      return output.result.code;
+      const transformedError = transform({
+        reason: output.result.reason,
+        code: output.result.code,
+        data: output.result.data,
+        transaction: output.result.transaction,
+      });
+      return JSON.stringify(transformedError, null, 2);
     } else {
+      console.error(output.result);
       return 'UNKNOWN_ERROR';
     }
   }
 
-  if (BigNumber.isBigNumber(output.result)) {
-    return output.result.toString();
-  }
+  const { result } = output;
 
-  return JSON.stringify(output.result);
+  const transformedResult = transform(result);
+
+  return JSON.stringify(transformedResult, null, 2);
+}
+
+function transform(value: unknown) {
+  if (Array.isArray(value)) {
+    const entries = Object.entries(value);
+
+    return entries.reduce((acc, [k, v], index) => {
+      return { ...acc, [k]: transform(v) };
+    }, {});
+  } else {
+    if (BigNumber.isBigNumber(value)) {
+      return `${value.toString()} (${value.toHexString()})`;
+    }
+    return value;
+  }
 }
 
 export default FunctionSelect;

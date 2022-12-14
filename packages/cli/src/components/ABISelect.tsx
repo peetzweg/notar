@@ -1,62 +1,122 @@
-import { ERC20ABI, ERC4626ABI, ERC721ABI, ERC1155ABI } from '@abimate/solmate';
+import ERC1155 from '@abimate/solmate/ERC1155';
+import ERC20 from '@abimate/solmate/ERC20';
+import ERC721 from '@abimate/solmate/ERC721';
+import { ContractInterface } from 'ethers';
 import { Box, Text } from 'ink';
 import SelectInput from 'ink-select-input';
 import React, { FC, useCallback, useEffect, useMemo } from 'react';
-
 import { useABIs } from '../hooks/useABIs';
+import { useEtherscan } from '../hooks/useEtherscan';
+import { useOnBack } from '../hooks/useOnBack';
 
-const DEFAULT_ABIs = {
-  ERC20: ERC20ABI,
-  ERC721: ERC721ABI,
-  ERC1155: ERC1155ABI,
-  ERC4626: ERC4626ABI,
-};
+const SELECT_ITEMS_DEFAULT_ABIs = [
+  {
+    label: 'ERC1155 (solmate)',
+    value: ERC1155,
+    key: 'ERC1155 (solmate)',
+  },
+  {
+    label: 'ERC721 (solmate)',
+    value: ERC721,
+    key: 'ERC721 (solmate)',
+  },
+  {
+    label: 'ERC20 (solmate)',
+    value: ERC20,
+    key: 'ERC20 (solmate)',
+  },
+];
+
+export interface ABIItem {
+  label: string;
+  value: ContractInterface;
+}
 
 interface ABISelectProps {
-  onSuccess: (item: any) => void;
+  onSuccess: (item: ABIItem) => void;
+  onBack: () => void;
   abi?: string;
 }
 
-const ABISelect: FC<ABISelectProps> = ({ onSuccess, abi }) => {
-  const { abis, isLoading } = useABIs();
+const ABISelect: FC<ABISelectProps> = ({ onSuccess, abi, onBack }) => {
+  useOnBack(onBack);
+  const { abis: abiFiles, isLoading } = useABIs();
+  const {
+    abi: etherscanABI,
+    isLoading: etherscanLoading,
+    error: etherscanError,
+  } = useEtherscan();
 
-  const items = useMemo(() => {
-    return Object.entries({ ...DEFAULT_ABIs, ...abis })
-      .map(([label, value]) => ({
-        label,
-        value,
-        key: label,
-      }))
-      .sort((a, b) => a.label.localeCompare(b.label));
-  }, [abis, isLoading]);
+  const selectItemsOfABIFiles: ABIItem[] = useMemo(
+    () =>
+      Object.entries({ ...abiFiles })
+        .map(([label, value]) => ({
+          label,
+          value: value as ContractInterface,
+          key: label,
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label)),
+    [abiFiles]
+  );
+  const selectItemABIEtherscan: ABIItem = useMemo(() => {
+    let label = 'ABI from Etherscan';
+    if (etherscanLoading) {
+      label += ' (loading)';
+    }
+    if (etherscanError) {
+      label += ` (${etherscanError})`;
+    }
+
+    return {
+      label,
+      value: etherscanABI,
+      key: 'etherscan',
+    };
+  }, [etherscanABI, etherscanError, etherscanLoading]);
+
+  const allSelectItems: ABIItem[] = useMemo(() => {
+    return [
+      selectItemABIEtherscan,
+      ...selectItemsOfABIFiles,
+      ...SELECT_ITEMS_DEFAULT_ABIs,
+    ].filter(Boolean);
+  }, [
+    selectItemsOfABIFiles,
+    selectItemABIEtherscan,
+    SELECT_ITEMS_DEFAULT_ABIs,
+  ]);
 
   const handleSelect = useCallback(
-    (item: any) => {
-      onSuccess(item);
+    (item: ABIItem) => {
+      if (item.value) onSuccess(item);
     },
     [onSuccess]
   );
 
   useEffect(
     function selectABIArgument() {
-      if (abi && items && !isLoading) {
-        const abiItem = items.find((item) => item.label === abi);
+      if (abi && allSelectItems && !isLoading) {
+        const abiItem = allSelectItems.find((item) => item.label === abi);
         if (abiItem) {
           handleSelect(abiItem);
         }
       }
     },
-    [abi, items, handleSelect, isLoading]
+    [abi, allSelectItems, handleSelect, isLoading]
   );
 
   return (
     <Box flexDirection="column">
       <Text bold>ABI:</Text>
 
-      {items && (
+      {allSelectItems && (
         <Box flexDirection="column">
-          <SelectInput items={items} onSelect={handleSelect} limit={10} />
-          {items.length > 10 && <Text>{'\t↓'}</Text>}
+          <SelectInput
+            items={allSelectItems}
+            onSelect={handleSelect}
+            limit={10}
+          />
+          {allSelectItems.length > 10 && <Text>{'\t↓'}</Text>}
         </Box>
       )}
     </Box>

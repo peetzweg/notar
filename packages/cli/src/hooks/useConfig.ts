@@ -4,14 +4,18 @@ import path from 'path';
 import fs from 'fs';
 import ini from 'ini';
 
-interface Config {
-  [networkName: string]: {
-    rpc: string;
-    abi_dir?: string;
-  };
+export interface NetworkConfig {
+  rpc: `https://${string}`;
+  abi_dir?: string;
+  scan_url?: `https://${string}`;
+  scan_api_key?: string;
 }
 
-export function useConfig(): Config {
+export interface NotarConfig {
+  [networkName: string]: NetworkConfig;
+}
+
+export function useConfig(): NotarConfig {
   return useMemo(() => {
     const pathToConfig = path.join(os.homedir() + '/.notarrc');
 

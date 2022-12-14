@@ -1,15 +1,17 @@
 import { utils } from 'ethers';
-import { Box, Text } from 'ink';
+import { Box, Text, useInput } from 'ink';
 import TextInput from 'ink-text-input';
 import React, { FC, useCallback, useEffect, useState } from 'react';
+import { useOnBack } from '../hooks/useOnBack';
 
 interface InputProps {
   address?: string;
   onSuccess: (address: string) => void;
+  onBack: () => void;
 }
-const AddressInput: FC<InputProps> = ({ address, onSuccess }) => {
+const AddressInput: FC<InputProps> = ({ address, onSuccess, onBack }) => {
+  useOnBack(onBack);
   const [value, setValue] = useState(address || '');
-
   const handleSubmit = useCallback(
     (rawAddress: string) => {
       if (rawAddress === undefined || rawAddress.trim().length === 0) return;
