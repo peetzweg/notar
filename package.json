@@ -9,7 +9,7 @@
   "private": true,
   "dependencies": {
     "@abimate/core": "^0.1.0",
-    "@abimate/solmate": "^1.0.0",
+    "@abimate/solmate": "^1.1.0",
     "@shazow/whatsabi": "^0.2.1",
     "@swc/helpers": "~0.3.17",
     "axios": "^1.1.3",

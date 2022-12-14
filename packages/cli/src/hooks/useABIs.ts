@@ -29,6 +29,7 @@ const readABIs = async (path: string) => {
           ABIs[basename(f, '.json')] = JSON.parse(buffer.toString())['abi'];
         })
         .catch(() =>
+          // TODO only if verbose flag is set
           console.warn(`${f} does not contain a valid ABI definition`)
         )
     )

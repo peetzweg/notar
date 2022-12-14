@@ -1,8 +1,8 @@
+import axios from 'axios';
 import { ContractInterface } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import { useNotar } from '../context/NotarContext';
 import { useConfig } from './useConfig';
-import axios from 'axios';
 
 interface UserEtherscanResult {
   abi?: ContractInterface;
@@ -11,20 +11,22 @@ interface UserEtherscanResult {
 }
 
 export const useEtherscan = (): UserEtherscanResult => {
-  const [{ provider, address, network }] = useNotar();
+  const [{ address, network }] = useNotar();
   const config = useConfig();
   const { scan_api_key, scan_url } = useMemo(
     () => config[network.name],
     [config, network]
   );
+
   const [state, setState] = useState<UserEtherscanResult>({
-    isLoading: false,
+    isLoading: true,
     abi: undefined,
     error: false,
   });
 
   useEffect(() => {
     if (!scan_api_key || !scan_url) {
+      setState({ isLoading: false, error: 'No scanner setup' });
       return;
     }
     setState({ isLoading: true });
