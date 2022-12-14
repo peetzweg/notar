@@ -12,21 +12,19 @@ Create custom `token` command to inspect ERC20 tokens:
 
 ## How to Install
 
-```
+```sh
 npm install --global notar-cli
-
-notar
 ```
 
 or use it via `npx`
 
-```
+```sh
 npx notar-cli
 ```
 
 ## How to Use
 
-```
+```sh
   Usage
     $ notar
 
@@ -46,6 +44,9 @@ npx notar-cli
 However, `notar` can be configured to your liking by creating a `.notarrc` file in your `$HOME` directory. The configuration should follow the [`ini` format](https://en.wikipedia.org/wiki/INI_file). You can easily add your own ABI files as well as connect to other EVM compatible networks.
 
 Example Config
+
+`~/.notarrc`
+
 ```ini
 ; Global
 abi_dir=~/.abis ; Folder which contains `ethers` compatible ABIs
@@ -54,15 +55,26 @@ abi_dir=~/.abis ; Folder which contains `ethers` compatible ABIs
 [bsc] ; Section header => network name
 rpc=https://bsc-dataseed.binance.org/ ; rpc url
 
+
 [polygon]
 rpc=https://rpc-mainnet.matic.quiknode.pro
 
 [moonbeam]
 rpc=https://moonbeam.public.blastapi.io
-
 ```
 
+## Fetch ABIs from Etherscan
 
+Notar is able to fetch ABIs of verified contracts directly from [Etherscan](https://etherscan.io/) and others alike. In order to do this it needs the API url of the scanner and a valid API key. It's setup like this to support all chains which have an Etherscan equivalent.
+
+`~/.notarrc`
+
+```ini
+[ethereum]
+rpc=https://rpc.ankr.com/eth
+scan_url=https://api.etherscan.io/
+scan_api_key=YOUR_API_KEY
+```
 
 ## Special Thanks
 
