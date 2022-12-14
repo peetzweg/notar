@@ -157,6 +157,7 @@ function renderResult(output: CallOutput): string {
       });
       return JSON.stringify(transformedError, null, 2);
     } else {
+      console.error(output.result);
       return 'UNKNOWN_ERROR';
     }
   }
