@@ -1,5 +1,15 @@
 # Change Log
 
+## [1.2.1] - 2022-12-16
+
+### Fixed
+
++ using left arrow to navigate back from ABI selection wasn't removing the previous selected abi.
+
+### Changed
+
++ 'Etherscan' ABI can now be preselected from the cli arguments using the `--abi/-i` flag
+
 ## [1.2.0] - 2022-12-14
 
 ### Added
