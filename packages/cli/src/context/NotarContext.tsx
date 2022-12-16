@@ -2,7 +2,6 @@ import { Contract, providers } from 'ethers';
 import React, { useCallback, useContext, useState } from 'react';
 import { ABIItem } from '../components/ABISelect';
 import { SelectedNetwork } from '../components/NetworkSelect';
-import { useConfig } from '../hooks/useConfig';
 
 interface NotarState {
   address?: string;
@@ -35,11 +34,7 @@ interface NotarContextProviderProps {
 
 export const NotarContextProvider = ({
   children,
-  address: addressArg,
-  abi: abiArg,
-  network: networkArg,
 }: NotarContextProviderProps) => {
-  const config = useConfig();
   const [state, setState] = useState<NotarState>({});
   const updateContext = useCallback(
     (newContext: Partial<NotarState>) => {
@@ -52,6 +47,7 @@ export const NotarContextProvider = ({
           );
         }
 
+        // Init Contract instance if everything needed is available
         if (
           newState.abi &&
           !newState.contract &&
@@ -67,6 +63,10 @@ export const NotarContextProvider = ({
           } catch (exception) {
             console.error(exception);
           }
+        }
+        // Delete Contract instance if ABI is removed
+        if (!newState.abi && newState.contract) {
+          newState.contract = undefined;
         }
 
         return newState;
