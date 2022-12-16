@@ -30,6 +30,7 @@ const SELECT_ITEMS_DEFAULT_ABIs = [
 export interface ABIItem {
   label: string;
   value: ContractInterface;
+  key: string;
 }
 
 interface ABISelectProps {
@@ -96,7 +97,13 @@ const ABISelect: FC<ABISelectProps> = ({ onSuccess, abi, onBack }) => {
   useEffect(
     function selectABIArgument() {
       if (abi && allSelectItems && !isLoading) {
-        const abiItem = allSelectItems.find((item) => item.label === abi);
+        const lowerCaseAbi = abi.toLowerCase();
+        const abiItem = allSelectItems.find(
+          (item) =>
+            (item.label.toLowerCase() === lowerCaseAbi ||
+              item.key.toLowerCase() === lowerCaseAbi) &&
+            item.value !== undefined
+        );
         if (abiItem) {
           handleSelect(abiItem);
         }
