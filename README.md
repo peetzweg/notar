@@ -55,7 +55,6 @@ abi_dir=~/.abis ; Folder which contains `ethers` compatible ABIs
 [bsc] ; Section header => network name
 rpc=https://bsc-dataseed.binance.org/ ; rpc url
 
-
 [polygon]
 rpc=https://rpc-mainnet.matic.quiknode.pro
 
@@ -72,10 +71,13 @@ Notar is able to fetch ABIs of verified contracts directly from [Etherscan](http
 ```ini
 [ethereum]
 rpc=https://rpc.ankr.com/eth
-scan_url=https://api.etherscan.io/
+scan_url=https://api.etherscan.io/ ; make sure it's the API endpoint url not the actual scanner website url.
 scan_api_key=YOUR_API_KEY
 ```
 
++ [How to aquire an API key from Etherscan and alike?](https://docs.etherscan.io/getting-started/viewing-api-usage-statistics)
+
++ [What are the `scan_url` endpoints for Etherscan and alike?](https://docs.etherscan.io/getting-started/endpoint-urls)
 ## Special Thanks
 
 This cli is built with [ink](https://github.com/vadimdemedes/ink), [abimate](https://github.com/peetzweg/abimate) and [ethers](https://github.com/ethers-io/ethers.js/).
