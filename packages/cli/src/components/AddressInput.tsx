@@ -1,5 +1,5 @@
 import { utils } from 'ethers';
-import { Box, Text, useInput } from 'ink';
+import { Box, Text } from 'ink';
 import TextInput from 'ink-text-input';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useOnBack } from '../hooks/useOnBack';

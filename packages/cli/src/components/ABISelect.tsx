@@ -4,10 +4,12 @@ import ERC721 from '@abimate/solmate/ERC721';
 import { ContractInterface } from 'ethers';
 import { Box, Text } from 'ink';
 import SelectInput from 'ink-select-input';
-import React, { FC, useCallback, useEffect, useMemo } from 'react';
+import TextInput from 'ink-text-input';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useABIs } from '../hooks/useABIs';
 import { useEtherscan } from '../hooks/useEtherscan';
 import { useOnBack } from '../hooks/useOnBack';
+import Fuse from 'fuse.js';
 
 const SELECT_ITEMS_DEFAULT_ABIs = [
   {
@@ -47,6 +49,7 @@ const ABISelect: FC<ABISelectProps> = ({ onSuccess, abi, onBack }) => {
     isLoading: etherscanLoading,
     error: etherscanError,
   } = useEtherscan();
+  const [search, setSearch] = useState<string>('');
 
   const selectItemsOfABIFiles: ABIItem[] = useMemo(
     () =>
@@ -86,6 +89,17 @@ const ABISelect: FC<ABISelectProps> = ({ onSuccess, abi, onBack }) => {
     selectItemABIEtherscan,
     SELECT_ITEMS_DEFAULT_ABIs,
   ]);
+  const fuse = useMemo(
+    () =>
+      new Fuse(allSelectItems, {
+        keys: ['label'],
+      }),
+    [allSelectItems]
+  );
+  const filteredSelectItems = useMemo(() => {
+    if (search.length > 0) return fuse.search(search).map((r) => r.item);
+    return allSelectItems;
+  }, [allSelectItems, search, fuse]);
 
   const handleSelect = useCallback(
     (item: ABIItem) => {
@@ -114,16 +128,19 @@ const ABISelect: FC<ABISelectProps> = ({ onSuccess, abi, onBack }) => {
 
   return (
     <Box flexDirection="column">
-      <Text bold>ABI:</Text>
+      <Box flexDirection="row">
+        <Text bold>ABI:</Text>
+        <TextInput onChange={(v) => setSearch(v)} value={search} />
+      </Box>
 
-      {allSelectItems && (
+      {filteredSelectItems && (
         <Box flexDirection="column">
           <SelectInput
-            items={allSelectItems}
+            items={filteredSelectItems}
             onSelect={handleSelect}
             limit={10}
           />
-          {allSelectItems.length > 10 && <Text>{'\t↓'}</Text>}
+          {filteredSelectItems.length > 10 && <Text>{'\t↓'}</Text>}
         </Box>
       )}
     </Box>

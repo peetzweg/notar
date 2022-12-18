@@ -31,6 +31,7 @@ const FunctionSelect = ({ contract, onBack }: FunctionSelectProps) => {
   const [input, setInput] = useState<string>('');
   const [inputs, setInputs] = useState<Array<any>>([]);
   const [outputs, setOutputs] = useState<Array<CallOutput>>([]);
+  const [search, setSearch] = useState<string>('');
 
   const fragmentItems: Array<Item> = useMemo(
     () =>
@@ -88,7 +89,7 @@ const FunctionSelect = ({ contract, onBack }: FunctionSelectProps) => {
             setInputs([]);
           });
       } catch (exception) {
-        console.warn('Something unexpected happened.');
+        console.warn('Something unexpected happened.', exception);
         setFragment(undefined);
         setInputs([]);
       }
