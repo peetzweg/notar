@@ -1,11 +1,11 @@
 import { BigNumber, Contract } from 'ethers';
 import { FunctionFragment } from 'ethers/lib/utils';
-import { Box, Static, Text, useInput } from 'ink';
+import Fuse from 'fuse.js';
+import { Box, Static, Text } from 'ink';
 import SelectInput from 'ink-select-input';
-
 import TextInput from 'ink-text-input';
 
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useOnBack } from '../hooks/useOnBack';
 
 interface Item {
@@ -47,7 +47,20 @@ const FunctionSelect = ({ contract, onBack }: FunctionSelectProps) => {
     [contract]
   );
 
+  const fuse = useMemo(
+    () =>
+      new Fuse(fragmentItems, {
+        keys: ['label'],
+      }),
+    [fragmentItems]
+  );
+  const filteredFragmentItems = useMemo(() => {
+    if (search.length > 0) return fuse.search(search).map((r) => r.item);
+    return fragmentItems;
+  }, [fragmentItems, search, fuse]);
+
   const handleFragmentSelect = useCallback((item: Item) => {
+    setSearch('');
     setFragment(item.value);
   }, []);
 
@@ -98,25 +111,28 @@ const FunctionSelect = ({ contract, onBack }: FunctionSelectProps) => {
 
   return (
     <Box flexDirection="column">
-      <Text bold>Fn:</Text>
+      <Box flexDirection="row">
+        <Text bold>Fn:</Text>
+        <Box marginLeft={1}>
+          {fragment ? (
+            <Text bold={true}>
+              {`${fragment.name}(${fragment.inputs
+                .map((input, index) => inputs[index] || input.type)
+                .join(', ')})`}
+            </Text>
+          ) : (
+            <TextInput onChange={(v) => setSearch(v)} value={search} />
+          )}
+        </Box>
+      </Box>
       {!fragment && (
         <Box flexDirection="column">
           <SelectInput
-            items={fragmentItems}
+            items={filteredFragmentItems}
             onSelect={handleFragmentSelect}
             limit={10}
           />
-          {fragmentItems.length > 10 && <Text>{'\t↓'}</Text>}
-        </Box>
-      )}
-
-      {fragment && (
-        <Box marginBottom={1}>
-          <Text bold={true}>
-            {`${fragment.name}(${fragment.inputs
-              .map((input, index) => inputs[index] || input.type)
-              .join(', ')})`}
-          </Text>
+          {filteredFragmentItems.length > 10 && <Text>{'\t↓'}</Text>}
         </Box>
       )}
 

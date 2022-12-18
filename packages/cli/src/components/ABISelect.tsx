@@ -129,7 +129,9 @@ const ABISelect: FC<ABISelectProps> = ({ onSuccess, abi, onBack }) => {
   return (
     <Box flexDirection="column">
       <Box flexDirection="row">
-        <Text bold>ABI:</Text>
+        <Box flexDirection="row" marginRight={1}>
+          <Text bold>ABI:</Text>
+        </Box>
         <TextInput onChange={(v) => setSearch(v)} value={search} />
       </Box>
 

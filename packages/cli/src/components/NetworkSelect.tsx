@@ -1,9 +1,11 @@
-import { Box, Text } from 'ink';
+import { Box, Text, useApp } from 'ink';
 import SelectInput from 'ink-select-input';
-import React, { FC, useCallback, useEffect, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useConfig } from '../hooks/useConfig';
-
+import { useOnBack } from '../hooks/useOnBack';
+import Fuse from 'fuse.js';
+import TextInput from 'ink-text-input';
 const DEFAULT_NETWORKS = {
   ethereum: {
     rpc: 'https://rpc.ankr.com/eth',
@@ -21,6 +23,9 @@ interface NetworkSelectProps {
 }
 
 const NetworkSelect: FC<NetworkSelectProps> = ({ onSuccess, network }) => {
+  const { exit } = useApp();
+  useOnBack(() => exit());
+  const [search, setSearch] = useState<string>('');
   const config = useConfig();
   const items = useMemo(() => {
     return Object.entries({
@@ -38,6 +43,17 @@ const NetworkSelect: FC<NetworkSelectProps> = ({ onSuccess, network }) => {
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [config]);
+  const fuse = useMemo(
+    () =>
+      new Fuse(items, {
+        keys: ['label'],
+      }),
+    [items]
+  );
+  const filteredSelectItems = useMemo(() => {
+    if (search.length > 0) return fuse.search(search).map((r) => r.item);
+    return items;
+  }, [items, search, fuse]);
 
   useEffect(
     function selectOnlyNetwork() {
@@ -69,10 +85,19 @@ const NetworkSelect: FC<NetworkSelectProps> = ({ onSuccess, network }) => {
 
   return (
     <Box flexDirection="column">
-      <Text bold>Network:</Text>
+      <Box flexDirection="row">
+        <Text bold>Network:</Text>
+        <Box marginLeft={1}>
+          <TextInput onChange={(v) => setSearch(v)} value={search} />
+        </Box>
+      </Box>
 
-      {items && (
-        <SelectInput items={items} onSelect={handleSelect} limit={10} />
+      {filteredSelectItems && (
+        <SelectInput
+          items={filteredSelectItems}
+          onSelect={handleSelect}
+          limit={10}
+        />
       )}
     </Box>
   );

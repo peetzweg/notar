@@ -35,7 +35,7 @@ const AddressInput: FC<InputProps> = ({ address, onSuccess, onBack }) => {
   }, [address]);
 
   return (
-    <Box>
+    <Box flexDirection="row">
       <Box marginRight={1}>
         <Text bold>Address:</Text>
       </Box>
