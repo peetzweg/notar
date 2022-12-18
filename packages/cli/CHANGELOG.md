@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.3.0] - 2022-12-18
+
+### Added
+
++ ability to search items of network, abi and function select dialogs.
+
 ## [1.2.1] - 2022-12-16
 
 ### Fixed
