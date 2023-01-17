@@ -36,7 +36,7 @@ const FunctionSelect = ({ contract, onBack }: FunctionSelectProps) => {
   const fragmentItems: Array<Item> = useMemo(
     () =>
       contract.interface.fragments
-        .filter((fragment) => fragment.type != 'event')
+        .filter((fragment) => fragment.type === 'function')
         .map((fragment, index) => ({
           label: `${fragment.name}(${fragment.inputs
             .map((i) => i.name || i.type)

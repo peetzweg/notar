@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.3.1] - 2023-01-17
+
+### Fixed
+
++ filters out all non `function` type fragments
+
 ## [1.3.0] - 2022-12-18
 
 ### Added
