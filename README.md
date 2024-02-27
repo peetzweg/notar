@@ -39,7 +39,7 @@ npx notar-cli
 
 ## Configuration
 
-`notar` has an default ethereum RPC setup (https://rpc.ankr.com/eth) and packaged with some [ABIs](https://github.com/peetzweg/notar/blob/6647ccdb9b5b6532bcf681580bbb93477a219aa9/packages/cli/src/components/ABISelect.tsx#L8-L13) out of the box.
+`notar` has an default ethereum RPC setup (`https://rpc.ankr.com/eth`) and packaged with some [ABIs](https://github.com/peetzweg/notar/blob/6647ccdb9b5b6532bcf681580bbb93477a219aa9/packages/cli/src/components/ABISelect.tsx#L8-L13) out of the box.
 
 However, `notar` can be configured to your liking by creating a `.notarrc` file in your `$HOME` directory. The configuration should follow the [`ini` format](https://en.wikipedia.org/wiki/INI_file). You can easily add your own ABI files as well as connect to other EVM compatible networks.
 
@@ -78,6 +78,7 @@ scan_api_key=YOUR_API_KEY
 + [How to aquire an API key from Etherscan and alike?](https://docs.etherscan.io/getting-started/viewing-api-usage-statistics)
 
 + [What are the `scan_url` endpoints for Etherscan and alike?](https://docs.etherscan.io/getting-started/endpoint-urls)
+
 ## Special Thanks
 
 This cli is built with [ink](https://github.com/vadimdemedes/ink), [abimate](https://github.com/peetzweg/abimate) and [ethers](https://github.com/ethers-io/ethers.js/).
