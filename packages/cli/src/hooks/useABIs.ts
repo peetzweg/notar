@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { ContractInterface } from 'ethers';
+import fs from 'fs';
 import { readdir, readFile } from 'fs/promises';
 import { basename, resolve } from 'path';
 import { useConfig } from './useConfig';
@@ -20,6 +21,7 @@ const readABIs = async (path: string) => {
   const filepaths = (await getFiles(path)).filter((path) =>
     path.endsWith('.json')
   );
+
   const ABIs: Record<string, Array<ContractInterface>> = {};
   await Promise.all(
     filepaths.map((f) =>
@@ -42,12 +44,17 @@ export const useABIs = () => {
   const config = useConfig();
 
   useEffect(() => {
-    if (config['abi_dir'] && typeof config['abi_dir'] === 'string') {
+    if (
+      config['abi_dir'] &&
+      typeof config['abi_dir'] === 'string' &&
+      fs.existsSync(config['abi_dir'])
+    ) {
       readABIs(config['abi_dir']).then((abis) => {
         setABIs(abis);
         setLoading(false);
       });
     } else {
+      // TODO could warn user that given abi_dir does not exist
       setLoading(false);
     }
   }, [config]);
