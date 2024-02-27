@@ -14,7 +14,8 @@ export const useEtherscan = (): UserEtherscanResult => {
   const [{ address, network }] = useNotar();
   const config = useConfig();
   const { scan_api_key, scan_url } = useMemo(
-    () => config[network.name],
+    () =>
+      config[network.name] || { scan_api_key: undefined, scan_url: undefined },
     [config, network]
   );
 
